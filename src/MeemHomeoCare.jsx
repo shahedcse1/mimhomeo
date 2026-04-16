@@ -74,9 +74,64 @@ const style = `
     font-size: 14px !important;
     box-shadow: 0 2px 8px rgba(245,166,35,0.3);
     margin-left: 8px;
+    text-decoration: none;
+    display: inline-flex; align-items: center;
   }
   .nav-cta::after { display: none !important; }
   .nav-cta:hover { transform: translateY(-1px); box-shadow: 0 4px 14px rgba(245,166,35,0.5); color: var(--green-dark) !important; }
+
+  /* HAMBURGER */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 8px;
+    z-index: 1100;
+  }
+  .hamburger span {
+    display: block;
+    width: 26px;
+    height: 3px;
+    background: #fff;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+  .hamburger.open span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+
+  /* MOBILE MENU */
+  .mobile-menu {
+    display: none;
+    flex-direction: column;
+    background: linear-gradient(135deg, #1a5c2a 0%, #0d3b18 100%);
+    padding: 8px 0 20px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+  }
+  .mobile-menu.open { display: flex; }
+  .mobile-menu .nav-link {
+    padding: 14px 28px;
+    text-align: left;
+    font-size: 17px;
+    border-radius: 0;
+    width: 100%;
+  }
+  .mobile-menu .nav-link::after { display: none; }
+  .mobile-menu .nav-link:hover, .mobile-menu .nav-link.active {
+    background: rgba(255,255,255,0.08);
+    color: var(--gold);
+  }
+  .mobile-menu .nav-cta {
+    margin: 10px 24px 0;
+    border-radius: 8px !important;
+    padding: 13px 18px !important;
+    justify-content: center;
+    font-size: 15px !important;
+  }
 
   /* SLIDER */
   .slider { position: relative; width: 100%; overflow: hidden; height: 420px; }
@@ -201,23 +256,22 @@ const style = `
     transition: transform 0.25s, box-shadow 0.25s;
   }
   .doctor-card:hover { transform: translateY(-6px); box-shadow: 0 16px 48px rgba(26,92,42,0.18); }
- .doctor-avatar {
-  width: 200px;
-  height: 200px;
-  border-radius: 40%;
-  overflow: hidden;
-  margin: 0 auto 16px;
-}
-
-.doctor-avatar-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center center;
-}
+  .doctor-avatar {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto 16px;
+  }
+  .doctor-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+  }
   .doc1-bg {
     background: linear-gradient(135deg, #bccec0 0%, #d2e7d3 50%, #bcd7be 100%);
-}
+  }
   .doc2-bg { background: linear-gradient(135deg, #1565c0 0%, #1976d2 50%, #0d47a1 100%); }
   .doctor-avatar-emoji {
     font-size: 90px; line-height: 1;
@@ -385,13 +439,13 @@ const style = `
   /* RESPONSIVE */
   @media(max-width:768px){
     .nav-links { display: none; }
+    .hamburger { display: flex; }
     .slider { height: 300px; }
     .slide-title { font-size: 24px; }
     .page-hero h1 { font-size: 28px; }
     .doctors-grid { grid-template-columns: 1fr; }
     .services-categories { grid-template-columns: 1fr; }
   }
-
 
   /* ANIMATIONS */
   @keyframes fadeInUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
@@ -400,8 +454,6 @@ const style = `
   .fade-in-d2 { animation-delay:0.2s; opacity:0; }
   .fade-in-d3 { animation-delay:0.3s; opacity:0; }
 `;
-
-
 
 const SLIDES = [
   {
@@ -452,8 +504,6 @@ function Slider({ onNavigate }) {
     timerRef.current = setInterval(() => setCur(c => (c + 1) % SLIDES.length), 5000);
     return () => clearInterval(timerRef.current);
   }, []);
-
-  const s = SLIDES[cur];
 
   return (
     <div className="slider">
@@ -599,9 +649,9 @@ function HomePage({ onNavigate }) {
           <div className="doctors-grid">
             <div className="doctor-card">
               <div className="doctor-avatar doc1-bg">
-                <img 
-                  src="/shovonr.png" 
-                  alt="ডা: মনজুর উল কবীর শোভন" 
+                <img
+                  src="/shovonr.png"
+                  alt="ডা: মনজুর উল কবীর শোভন"
                   className="doctor-avatar-img"
                 />
               </div>
@@ -617,9 +667,9 @@ function HomePage({ onNavigate }) {
             </div>
             <div className="doctor-card">
               <div className="doctor-avatar doc1-bg">
-                <img 
-                  src="/monyr.png" 
-                  alt="ডা: মনজুর উল কবীর শোভন" 
+                <img
+                  src="/monyr.png"
+                  alt="ডা: মাইশা ফারিহা ইসলাম"
                   className="doctor-avatar-img"
                 />
               </div>
@@ -668,7 +718,6 @@ function DoctorsPage() {
       <section className="section">
         <div className="section-inner">
           <div style={{ display: "grid", gap: 48 }}>
-
             {/* Doctor 1 */}
             <div style={{ background: "#fff", borderRadius: 24, overflow: "hidden", boxShadow: "var(--shadow)", display: "grid", gridTemplateColumns: "300px 1fr" }}>
               <div style={{ background: "linear-gradient(135deg,#1a5c2a,#0d3b18)", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: 40, gap: 16 }}>
@@ -791,66 +840,18 @@ function DoctorsPage() {
 
 function ServicesPage() {
   const cats = [
-    {
-      icon: "🪨",
-      name: "পাথর সংক্রান্ত রোগ",
-      items: ["পিত্তপাথুরী", "কিডনি পাথর", "স্টোনার সমস্যা"],
-    },
-    {
-      icon: "👃",
-      name: "নাক, গলা ও মাথা",
-      items: ["নাকের পলিপাস", "সাইনাস", "মাইগ্রেন", "মাথাব্যথা", "টনসিল", "কান ব্যথা", "কান পাকা"],
-    },
-    {
-      icon: "🌸",
-      name: "মহিলা রোগ",
-      items: ["জরায়ু নেমে যাওয়া", "শ্বেতপ্রদর", "পলিসিস্টিক ওভারি", "ওভারিতে সিস্ট", "বন্ধ্যাত্ব", "গর্ভাবস্থায় চিকিৎসা", "জরায়ু টিউমার", "সহজ প্রসব"],
-    },
-    {
-      icon: "💪",
-      name: "পুরুষ সমস্যা",
-      items: ["যৌন দুর্বলতা", "স্বপ্নদোষ", "ধ্বজভঙ্গ", "অন্ডকোষের রোগ", "হাইড্রোসিল", "একশিরা"],
-    },
-    {
-      icon: "🫁",
-      name: "শ্বাস ও অ্যালার্জি",
-      items: ["এলার্জি", "এ্যাজমা", "শ্বাসকষ্ট", "পুরাতন কাশি", "নিউমোনিয়া", "ঠান্ডা সর্দি"],
-    },
-    {
-      icon: "🎗️",
-      name: "টিউমার ও গ্রন্থি",
-      items: ["ব্রেস্ট টিউমার", "জরায়ু টিউমার", "লাইপোমা", "সকল প্রকার টিউমার"],
-    },
-    {
-      icon: "🫀",
-      name: "হার্ট ও লিভার",
-      items: ["হার্টের সমস্যা", "কার্ডিওমেগালি", "ফ্যাটি লিভার", "লিভার সিরোসিস", "হেপাটাইটিস বি", "হেপাটাইটিস সি", "প্লীহা বৃদ্ধি"],
-    },
-    {
-      icon: "🦴",
-      name: "হাড় ও বাত",
-      items: ["বাতের ব্যথা", "বাতজ্বর", "স্পন্ডিলাইটিস", "মেরুদণ্ডের রোগ", "হাড়ভাঙ্গা জোড়া লাগানো", "হাড়ের ক্ষয়", "হাড়বৃদ্ধি"],
-    },
-    {
-      icon: "🩸",
-      name: "রক্ত ও সার্কুলেশন",
-      items: ["থ্যালাসেমিয়া", "অ্যানিমিয়া", "দুর্বলতা", "স্বাস্থ্যহীনতা"],
-    },
-    {
-      icon: "🍽️",
-      name: "পেট ও পাচনতন্ত্র",
-      items: ["কোষ্ঠকাঠিন্য", "আমাশয়", "ডায়রিয়া", "আইবিএস", "ক্রনিক আমাশয়", "পাইলস", "ফিস্টুলা"],
-    },
-    {
-      icon: "⚖️",
-      name: "ওজন ও পুষ্টি",
-      items: ["ওজন কমানো", "মেদ কমানো", "ফ্যাটি লিভার"],
-    },
-    {
-      icon: "🧠",
-      name: "মানসিক ও অন্যান্য",
-      items: ["মানসিক সমস্যা", "চোখের সমস্যা", "অঞ্জলি", "মাড়ি ফোলা", "দাঁত ব্যথা", "চর্মরোগ", "ফোড়া", "ডেঙ্গু", "টাইফয়েড", "মা ও শিশুর সকল রোগ"],
-    },
+    { icon: "🪨", name: "পাথর সংক্রান্ত রোগ", items: ["পিত্তপাথুরী", "কিডনি পাথর", "স্টোনার সমস্যা"] },
+    { icon: "👃", name: "নাক, গলা ও মাথা", items: ["নাকের পলিপাস", "সাইনাস", "মাইগ্রেন", "মাথাব্যথা", "টনসিল", "কান ব্যথা", "কান পাকা"] },
+    { icon: "🌸", name: "মহিলা রোগ", items: ["জরায়ু নেমে যাওয়া", "শ্বেতপ্রদর", "পলিসিস্টিক ওভারি", "ওভারিতে সিস্ট", "বন্ধ্যাত্ব", "গর্ভাবস্থায় চিকিৎসা", "জরায়ু টিউমার", "সহজ প্রসব"] },
+    { icon: "💪", name: "পুরুষ সমস্যা", items: ["যৌন দুর্বলতা", "স্বপ্নদোষ", "ধ্বজভঙ্গ", "অন্ডকোষের রোগ", "হাইড্রোসিল", "একশিরা"] },
+    { icon: "🫁", name: "শ্বাস ও অ্যালার্জি", items: ["এলার্জি", "এ্যাজমা", "শ্বাসকষ্ট", "পুরাতন কাশি", "নিউমোনিয়া", "ঠান্ডা সর্দি"] },
+    { icon: "🎗️", name: "টিউমার ও গ্রন্থি", items: ["ব্রেস্ট টিউমার", "জরায়ু টিউমার", "লাইপোমা", "সকল প্রকার টিউমার"] },
+    { icon: "🫀", name: "হার্ট ও লিভার", items: ["হার্টের সমস্যা", "কার্ডিওমেগালি", "ফ্যাটি লিভার", "লিভার সিরোসিস", "হেপাটাইটিস বি", "হেপাটাইটিস সি", "প্লীহা বৃদ্ধি"] },
+    { icon: "🦴", name: "হাড় ও বাত", items: ["বাতের ব্যথা", "বাতজ্বর", "স্পন্ডিলাইটিস", "মেরুদণ্ডের রোগ", "হাড়ভাঙ্গা জোড়া লাগানো", "হাড়ের ক্ষয়", "হাড়বৃদ্ধি"] },
+    { icon: "🩸", name: "রক্ত ও সার্কুলেশন", items: ["থ্যালাসেমিয়া", "অ্যানিমিয়া", "দুর্বলতা", "স্বাস্থ্যহীনতা"] },
+    { icon: "🍽️", name: "পেট ও পাচনতন্ত্র", items: ["কোষ্ঠকাঠিন্য", "আমাশয়", "ডায়রিয়া", "আইবিএস", "ক্রনিক আমাশয়", "পাইলস", "ফিস্টুলা"] },
+    { icon: "⚖️", name: "ওজন ও পুষ্টি", items: ["ওজন কমানো", "মেদ কমানো", "ফ্যাটি লিভার"] },
+    { icon: "🧠", name: "মানসিক ও অন্যান্য", items: ["মানসিক সমস্যা", "চোখের সমস্যা", "অঞ্জলি", "মাড়ি ফোলা", "দাঁত ব্যথা", "চর্মরোগ", "ফোড়া", "ডেঙ্গু", "টাইফয়েড", "মা ও শিশুর সকল রোগ"] },
   ];
 
   return (
@@ -1044,9 +1045,11 @@ function Footer({ onNavigate }) {
 
 export default function App() {
   const [page, setPage] = useState("home");
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const navigate = (p) => {
     setPage(p);
+    setMenuOpen(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -1069,12 +1072,24 @@ export default function App() {
               <div className="en-name">Mim Homeo Care</div>
             </div>
           </div>
+          {/* Desktop links */}
           <div className="nav-links">
             {menuItems.map(m => (
               <button key={m.key} className={`nav-link ${page === m.key ? "active" : ""}`} onClick={() => navigate(m.key)}>{m.label}</button>
             ))}
-            <a href="tel:+8801920897682" className="nav-link nav-cta">📞 01920897682 </a>
+            <a href="tel:+8801920897682" className="nav-link nav-cta">📞 01920897682</a>
           </div>
+          {/* Hamburger button - mobile only */}
+          <button className={`hamburger ${menuOpen ? "open" : ""}`} onClick={() => setMenuOpen(o => !o)} aria-label="মেনু">
+            <span /><span /><span />
+          </button>
+        </div>
+        {/* Mobile dropdown menu */}
+        <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
+          {menuItems.map(m => (
+            <button key={m.key} className={`nav-link ${page === m.key ? "active" : ""}`} onClick={() => navigate(m.key)}>{m.label}</button>
+          ))}
+          <a href="tel:+8801920897682" className="nav-link nav-cta">📞 01920-897682</a>
         </div>
       </nav>
 
